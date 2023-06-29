@@ -15,9 +15,9 @@ async function viewAllDepartments() {
 async function viewAllRoles() {
   try {
     const query = `
-      SELECT roles.id, roles.title, roles.salary, departments.name AS departments
+      SELECT roles.id, roles.title, roles.salary, departments.name AS department
       FROM roles
-      INNER JOIN department ON roles.department_id = department.id
+      INNER JOIN departments ON roles.department_id = departments.id
     `;
     const [rows] = await connection.query(query);
     console.table(rows); // Console.log the rows as a table
@@ -30,11 +30,11 @@ async function viewAllRoles() {
 async function viewAllEmployees() {
   try {
     const query = `
-      SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name
-      FROM employee
-      INNER JOIN role ON employee.role_id = role.id
-      INNER JOIN department ON role.department_id = department.id
-      LEFT JOIN employee AS manager ON employee.manager_id = manager.id
+      SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name
+      FROM employees
+      INNER JOIN roles ON employees.role_id = roles.id
+      INNER JOIN departments ON roles.department_id = departments.id
+      LEFT JOIN employees AS manager ON employees.manager_id = manager.id
     `;
     const [rows] = await connection.query(query);
     console.table(rows); // Console.log the rows as a table
@@ -44,7 +44,16 @@ async function viewAllEmployees() {
 }
 
 // TODO: router.post("/add-department", addDepartment);
-
+async function addDepartment({BO}) {
+  try {
+    const query = `INSERT INTO departments (department_name)
+    VALUES (?)`;
+    await connection.query(query);
+    console.table(rows); // Console.log the rows as a table
+  } catch (error) {
+    throw error;
+  }
+}
 // TODO: router.post("/add-role", addRole);
 // TODO: router.post("/add-employee", addEmployee);
 // TODO: router.put("/update-employee-role/:id", updateEmployeeRole);

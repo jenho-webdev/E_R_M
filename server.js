@@ -43,7 +43,13 @@ async function handleChoice(choice) {
       await viewAllEmployees();
       break;
     case "Add a department":
-      await addDepartment();
+      const getInput = {
+        type: "input",
+        name: "name",
+        message: "What is the new department name?",
+      };
+      const name = inquirer.prompt(getInput);
+      await addDepartment(name);
       break;
     case "Add a role":
       await addRole();
