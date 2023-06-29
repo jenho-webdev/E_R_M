@@ -73,7 +73,7 @@ UPDATE AN EMPLOYEE ROLE
 ## Demo
 
 **[comming soon]** The following video demo the application being used from the command line:
-[![demo video](./assets/video-thumbnail.png)](https://youtube.com)
+[![demo video](./assets/video-thumbnail.png)](https://youtu.be/0KFz9y_DYPE)
 
 ## Contributing
 
