@@ -7,6 +7,7 @@ const {
   viewAllRoles,
   viewAllEmployees,
   addDepartment,
+  addRole,
 } = require("./db/store");
 
 // Function to prompt the user for their input
@@ -43,13 +44,7 @@ async function handleChoice(choice) {
       await viewAllEmployees();
       break;
     case "Add a department":
-      const getInput = {
-        type: "input",
-        name: "name",
-        message: "What is the new department name?",
-      };
-      const name = inquirer.prompt(getInput);
-      await addDepartment(name);
+      await addDepartment();
       break;
     case "Add a role":
       await addRole();

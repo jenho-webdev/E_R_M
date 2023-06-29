@@ -16,7 +16,8 @@ A simple CLI Employee Relationship Managment(ERM) System allows users to
   - [Installation](#installation)
   - [Configuration](#configuration)
   - [Usage](#usage)
-  - [Screenshots](#screenshots)
+  - [Roadmap](#roadmap)
+  - [Demo](#demo)
   - [Contributing](#contributing)
   - [License](#license)
   - [Credits](#credits)
@@ -51,10 +52,28 @@ Note: The .env file should never be committed to version control, as it contains
 2. Open your web browser and go to `http://localhost:3001`
 3. Use the ERM application to write and save notes.
 
+## Roadmap
 
-## Screenshots
+Functions available in current version:
 
-![Notes Page](./assets/image/screenshot.png)
+```list
+VIEW ALL DEPARTMENTS
+VIEW ALL ROLES
+VIEW ALL EMPLOYEES
+ADD A DEPARTMENT
+ADD A ROLE
+```
+
+Functions planned for next version:
+```list
+ADD AN EMPLOYEE 
+UPDATE AN EMPLOYEE ROLE
+```
+
+## Demo
+
+**[comming soon]** The following video demo the application being used from the command line:
+[![demo video](./assets/video-thumbnail.png)](https://youtube.com)
 
 ## Contributing
 
