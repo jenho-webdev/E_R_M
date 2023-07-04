@@ -103,7 +103,7 @@ Shield and badges used in this markdown document were sourced from Shields.io.
 ## Contact
 
 For any inquiries or questions, welcome to contact me @
-[![LinkedIn][linkedin-shield]][https://www.linkedin.com/in/jen-h-202a1723/](![Github)[Github-shield]][https://github.com/jenho-webdev/Personal-Portfolio](![Slack)[slack-shield]](https://jenworkspace-as73396.slack.com/archives/C052QLTJQHG)
+[![LinkedIn][linkedin-shield]](https://www.linkedin.com/in/jen-h-202a1723/)[![Github][Github-shield]](https://github.com/jenho-webdev/Personal-Portfolio)[![Slack][slack-shield]](https://jenworkspace-as73396.slack.com/archives/C052QLTJQHG)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
