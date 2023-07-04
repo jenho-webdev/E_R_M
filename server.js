@@ -9,6 +9,7 @@ const {
   addDepartment,
   addRole,
   addEmployee,
+  updateEmployee,
 } = require("./db/store");
 
 // Function to prompt the user for their input
