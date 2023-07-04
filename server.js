@@ -8,6 +8,7 @@ const {
   viewAllEmployees,
   addDepartment,
   addRole,
+  addEmployee,
 } = require("./db/store");
 
 // Function to prompt the user for their input
@@ -26,6 +27,7 @@ function promptUser() {
         "Add an employee",
         "Update an employee role",
         "Exit",
+        new inquirer.Separator(),
       ],
     },
   ]);
