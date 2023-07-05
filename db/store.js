@@ -101,7 +101,7 @@ async function addDepartment() {
     {
       
       await connection.query(query);
-      console.log("New department added successfully.");
+      console.log(`New department, ${answers.departmentName},  added successfully.`);
       await viewAllDepartments(); // Console log all exiting departments in a table
     }
     else
@@ -168,7 +168,7 @@ async function addRole() {
 
     await connection.query(query);
     await viewAllRoles(); // Console.log the updated roles table in a console.table(roles)
-    console.log("New role added successfully.");
+    console.log(`New role, ${answers.titleName}, added successfully.`);
     }
     else
     {
@@ -186,9 +186,9 @@ async function addRole() {
 async function addEmployee() {
   
     const rolesRows = await getAllRoles();
-    const rolesNames = rolesRows.map((row) => ({
-      name:`${row.title}`,
-      value:row.id,
+    const rolesChoices = rolesRows.map((row) => ({
+      name: `${row.title}`,
+      value: row.id,
     }));
 
     const employeesRows = await getAllEmployees();
@@ -228,20 +228,20 @@ async function addEmployee() {
       },
       {
         type: "list",
-        name: "roleChoice",
+        name: "rolesChoices",
         message: "What role he/she will be in?",
-        choices: rolesNames,
+        choices: rolesChoices,
       },
       {
         type: "list",
-        name: "managerChoice",
+        name: "managerChoices",
         message: "Who he/she will be reporting to?",
         choices: managerChoices,
       },
     ]);
 
-    const roleID = answers.roleChoice;
-    const managerID = answers.managerChoice;
+    const roleID = answers.rolesChoices;
+    const managerID = answers.managerChoices;
     //cap the first letter 
     let firstName = answers.firstName;
     
@@ -254,58 +254,150 @@ async function addEmployee() {
     
     await connection.query(query);
     await viewAllEmployees();
-    console.log("New employees added successfully."); // Console.log the rows as a table
+    console.log(`New employees, ${row.first_name} ${row.last_name} added successfully.`); // Console.log the rows as a table
   } catch (error) {
     throw error;
   }
 }
 
 
-// TODO: router.put("/update-employee-role/:id", updateEmployeeRole);
-async function updateEmployee() {
+// function to handle router.put("/update-employee-role/:id", updateEmployeeRole);
+async function updateEmployeeRole() {
   
   const employeesRows = await getAllEmployees();
   const employeesChoices = employeesRows.map((row) => ({
     name: `${row.first_name} ${row.last_name}`,
     value: row.id,
   }));
-
-  let managerChoices = employeesChoices
-  managerChoices.unshift({ name: "none", value: "none" });
+ const rolesRows = await getAllRoles();
+ const rolesChoices = rolesRows.map((row) => ({
+   name: `${row.title}`,
+   value: row.id,
+ }));
 
   try {
     //prompt user for new  employee's name
     const answers = await inquirer.prompt([
       {
         type: "list",
-        name: "eChoice",
-        message: "which employee profile would you like to update?",
+        name: "employeesChoices",
+        message: "Which employee's role would you like to update?",
         choices: employeesChoices,
       },
+
       {
         type: "list",
-        name: "roleChoice",
-        message: "Update employee's role: please select employee's new role.",
-        choices: rolesNames,
-      },
-      {
-        type: "list",
-        name: "managerChoice",
-        message: "Update employee's reporting manager: Select new reporting manager.",
-        choices: employeesChoices,
+        name: "rolesChoices",
+        message:
+          "Select employee's new role.",
+        choices: rolesChoices,
       },
     ]);
 
     const eID = answers.employeesChoices;
-    const query = `UPDATE employees SET role_id = ${answers.roleChoice}, manager_id = ${answers.managerChoice}`
+    const query = `UPDATE employees SET role_id = ${answers.rolesChoices} WHERE id = ${answers.employeesChoices}`;
     await connection.query(query);
+    
+    console.log("Employee's role updated successfully."); // Console.log the rows as a table
     await viewAllEmployees();
-    console.log("Employee's info updated successfully."); // Console.log the rows as a table
+
   } catch (error) {
     throw error;
   }
 }
 
+// function to handle router.put("/update-employee-manager/:id", updateEmployeeManager);
+async function updateEmployeeManager() {
+  
+  const employeesRows = await getAllEmployees();
+  const employeesChoices = employeesRows.map((row) => ({
+    name: `${row.first_name} ${row.last_name}`,
+    value: row.id,
+  }));
+  
+ 
+
+  try {
+    //prompt user for new  employee's name
+    const EEanswers = await inquirer.prompt([
+      {
+        type: "list",
+        name: "employeesChoices",
+        message: "Which employee's manager would you like to update?",
+        choices: employeesChoices,
+      },
+    ]);
+    //Filter down the employee list to exclude the selected employee that the user would like to update on as 
+    //it doesn't make any sense to select the same employee as is own manager.
+    
+    const managerChoices =  employeesChoices.filter((employee) => employee.value !== EEanswers.employeesChoices);
+
+    const managerAnswer = await inquirer.prompt([
+      {
+        type: "list",
+        name: "managerChoices",
+        message:
+          "Select new reporting manager.",
+        choices: managerChoices,
+      },
+    ])
+
+   
+
+    const eID = EEanswers.employeesChoices;
+    const mID = managerAnswer.managerChoices
+    const query = `UPDATE employees SET manager_id = ${mID} WHERE id = ${eID}`;
+    await connection.query(query);
+    
+    console.log("Employee's manager updated successfully."); 
+    // Console.log the all employees as a table
+    await viewAllEmployees();
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+//------------------------------DELETE FUNCTIONS------------------------------------
+//  function to handle router.delete("/delete-employee/:id", deleteAnEmployee);
+async function deleteAnEmployee() {
+  
+  const employeesRows = await getAllEmployees();
+  const employeesChoices = employeesRows.map((row) => ({
+    name: `${row.first_name} ${row.last_name}`,
+    value: row.id,
+  }));
+  
+ 
+
+  try {
+    //prompt user for new  employee's name
+    const EEanswers = await inquirer.prompt([
+      {
+        type: "list",
+        name: "employeesChoices",
+        message: "Which employee would you like to delete?",
+        choices: employeesChoices,
+      },
+    ]);
+    
+    const eID = EEanswers.employeesChoices;
+    
+    const setNullQuery = `UPDATE employees SET manager_id = NULL WHERE manager_id = ${eID}`;
+
+    const deleteQuery = `DELETE FROM employees WHERE id = ${eID}`;
+    await connection.query(setNullQuery);
+    await connection.query(deleteQuery);
+    
+    console.log("Employee deleted successfully."); 
+    // Console.log the all employees as a table
+    await viewAllEmployees();
+
+  } catch (error) {
+    throw error;
+  }
+}
 
 
 // Export the controller functions
@@ -316,5 +408,7 @@ module.exports = {
   addDepartment,
   addRole,
   addEmployee,
-  updateEmployee,
+  updateEmployeeRole,
+  updateEmployeeManager,
+  deleteAnEmployee,
 };

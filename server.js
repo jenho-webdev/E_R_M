@@ -1,7 +1,7 @@
 const inquirer = require("inquirer");
 const sequelize = require("./config/connection");
 
-//import function to handle empolyees api calls
+//import function to handle employees api calls
 const {
   viewAllDepartments,
   viewAllRoles,
@@ -9,7 +9,9 @@ const {
   addDepartment,
   addRole,
   addEmployee,
-  updateEmployee,
+  updateEmployeeRole,
+  updateEmployeeManager,
+  deleteAnEmployee,
 } = require("./db/store");
 
 // Function to prompt the user for their input
@@ -22,11 +24,13 @@ function promptUser() {
       choices: [
         "View all departments",
         "View all roles",
-        "View all employees",
+        "View all employees",        
         "Add a department",
         "Add a role",
         "Add an employee",
-        "Update an employee role",
+        "Update an employee's role",
+        "Update an employee's manager",
+        "Delete an employee",
         "Exit",
         new inquirer.Separator(),
       ],
@@ -38,7 +42,6 @@ async function handleChoice(choice) {
   switch (choice) {
     case "View all departments":
       await viewAllDepartments();
-
       break;
     case "View all roles":
       await viewAllRoles();
@@ -55,8 +58,14 @@ async function handleChoice(choice) {
     case "Add an employee":
       await addEmployee();
       break;
-    case "Update an employee role":
+    case "Update an employee's role":
       await updateEmployeeRole();
+      break;
+    case "Update an employee's manager":
+      await updateEmployeeManager();
+      break;
+    case "Delete an employee":
+      await deleteAnEmployee();
       break;
     case "Exit":
       process.exit();
