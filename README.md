@@ -54,6 +54,8 @@ Note: The .env file should never be committed to version control, as it contains
 
 ## Roadmap
 
+Current version: V2.0
+
 Functions available in current version:
 
 ```list
@@ -62,18 +64,25 @@ VIEW ALL ROLES
 VIEW ALL EMPLOYEES
 ADD A DEPARTMENT
 ADD A ROLE
+ADD AN EMPLOYEE
+UPDATE AN EMPLOYEE'S ROLE
+UPDATE AN EMPLOYEE'S MANAGER
+DELETE AN EMPLOYEE
+DELETE A ROLE
+EXIT
 ```
 
-Functions planned for next version:
+Functions planned for next version V3.0:
+
 ```list
-ADD AN EMPLOYEE 
-UPDATE AN EMPLOYEE ROLE
+VIEW EMPOLYEE BY DEPARTMENT
+VIEW EMPOLYEE BY ROLE
 ```
 
 ## Demo
 
-**[comming soon]** The following video demo the application being used from the command line:
-[![demo video](./assets/video-thumbnail.png)](https://youtu.be/0KFz9y_DYPE)
+The following video demo the application being used from the command line:
+[![demo video on v2](./assets/video-thumbnail.png)](https://youtu.be/ryJ6cZsPmUU)
 
 ## Contributing
 

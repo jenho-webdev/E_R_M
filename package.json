@@ -11,7 +11,7 @@
   },
   "name": "erm",
   "description": "A simple CLI Employee Relationship Managment(ERM) System allows users to",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "server.js",
   "repository": {
     "type": "git",
