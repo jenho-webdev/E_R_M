@@ -12,6 +12,7 @@ const {
   updateEmployeeRole,
   updateEmployeeManager,
   deleteAnEmployee,
+  deleteARole,
 } = require("./db/store");
 
 // Function to prompt the user for their input
@@ -31,6 +32,7 @@ function promptUser() {
         "Update an employee's role",
         "Update an employee's manager",
         "Delete an employee",
+        "Delete a role",
         "Exit",
         new inquirer.Separator(),
       ],
@@ -67,6 +69,9 @@ async function handleChoice(choice) {
     case "Delete an employee":
       await deleteAnEmployee();
       break;
+    case "Delete a role":
+      await deleteARole();
+      break;      
     case "Exit":
       process.exit();
   }
@@ -90,6 +95,9 @@ async function startApp() {
       await handleChoice(menuChoice);
     }
   } catch (error) {
-    console.error("An error occurred:", error);
+    console.error("\x1b[35m%s\x1b[0m", error.message);
+    console.error("\x1b[35m%s\x1b[0m", error);
+    startApp();
+    
   }
 }

@@ -23,14 +23,14 @@ async function viewAllDepartments() {
     throw error;
   }
 }
-//Function to get and return all roles in rows
+//Function to get and return all role in rows
 async function getAllRoles()
 {
   try {
     const query = `
-      SELECT roles.id, roles.title, roles.salary, departments.name AS department
-      FROM roles
-      INNER JOIN departments ON roles.department_id = departments.id
+      SELECT role.id, role.title, role.salary, departments.name AS department
+      FROM role
+      INNER JOIN departments ON role.department_id = departments.id
     `;
     const [rows] = await connection.query(query);
     return rows; 
@@ -50,11 +50,11 @@ async function viewAllRoles() {
 async function getAllEmployees() {
 try {
       const query = `
-      SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name
-      FROM employees
-      INNER JOIN roles ON employees.role_id = roles.id
-      INNER JOIN departments ON roles.department_id = departments.id
-      LEFT JOIN employees AS manager ON employees.manager_id = manager.id
+      SELECT employee.id, employee.first_name, employee.last_name, role.title, departments.name AS department, role.salary, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name
+      FROM employee
+      INNER JOIN role ON employee.role_id = role.id
+      INNER JOIN departments ON role.department_id = departments.id
+      LEFT JOIN employee AS manager ON employee.manager_id = manager.id
       `;
     const [rows] = await connection.query(query);
     return rows;
@@ -64,7 +64,7 @@ try {
   }
 }
 
-// function to retrieve all employees
+// function to retrieve all employee
 async function viewAllEmployees() {
   try {
     
@@ -97,21 +97,12 @@ async function addDepartment() {
 
     const query = `INSERT INTO departments (name) VALUES ("${answers.departmentName}")`;
     
-    if (await connection.query(`SELECT COUNT(*) FROM departments WHERE name = '${answers.departmentName}'`) < 1)
-    {
-      
       await connection.query(query);
-      console.log(`New department, ${answers.departmentName},  added successfully.`);
-      await viewAllDepartments(); // Console log all exiting departments in a table
-    }
-    else
-    { 
       console.log(
-        "\x1b[35m%s\x1b[0m",
-        `Department [${answers.departmentName}] already exist. Return to main menu.`
+        "\x1b[33m%s\x1b[0m",
+        `New department, ${answers.departmentName}, added successfully.`
       );
-
-    }
+      await viewAllDepartments(); // Console log all exiting departments in a table
   }catch (error) 
   {
     throw error;
@@ -160,24 +151,20 @@ async function addRole() {
       },
     ]);
 
-    if (await connection.query(`SELECT COUNT(*) FROM roles WHERE title = '${answers.titleName}'`) < 1)
-    {
     const department = rows.find((row) => row.name === answers.menuChoice);
     const department_id = department.id;
-    const query = `INSERT INTO roles (title, salary, department_id) VALUEs ("${answers.titleName}","${answers.salary}","${department_id}")`;
+    const query = `INSERT INTO role (title, salary, department_id) VALUEs ("${answers.titleName}","${answers.salary}","${department_id}")`;
 
     await connection.query(query);
-    await viewAllRoles(); // Console.log the updated roles table in a console.table(roles)
-    console.log(`New role, ${answers.titleName}, added successfully.`);
-    }
-    else
-    {
-      console.log(
-        "\x1b[35m%s\x1b[0m",
-        `Role [${answers.titleName}] already exist. Return to main menu.`
-      );
-    }
-  } catch (error) {
+    await viewAllRoles(); // Console.log the updated role table in a console.table(role)
+    console.log(
+      "\x1b[33m%s\x1b[0m",
+      `New role, ${answers.titleName}, added successfully.`
+    );
+  
+  } 
+  catch (error) 
+  {
     throw error;
   }
 }
@@ -185,14 +172,14 @@ async function addRole() {
 // function for router.post("/add-employee", addEmployee);
 async function addEmployee() {
   
-    const rolesRows = await getAllRoles();
-    const rolesChoices = rolesRows.map((row) => ({
+    const roleRows = await getAllRoles();
+    const roleChoices = roleRows.map((row) => ({
       name: `${row.title}`,
       value: row.id,
     }));
 
-    const employeesRows = await getAllEmployees();
-    managerChoices = employeesRows.map((row) => ({
+    const employeeRows = await getAllEmployees();
+    managerChoices = employeeRows.map((row) => ({
       name: `${row.first_name} ${row.last_name}`,
       value: row.id,
     }));
@@ -228,9 +215,9 @@ async function addEmployee() {
       },
       {
         type: "list",
-        name: "rolesChoices",
+        name: "roleChoices",
         message: "What role he/she will be in?",
-        choices: rolesChoices,
+        choices: roleChoices,
       },
       {
         type: "list",
@@ -240,7 +227,7 @@ async function addEmployee() {
       },
     ]);
 
-    const roleID = answers.rolesChoices;
+    const roleID = answers.roleChoices;
     const managerID = answers.managerChoices;
     //cap the first letter 
     let firstName = answers.firstName;
@@ -250,11 +237,14 @@ async function addEmployee() {
     lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
 
     //roleID and managerID are without "" to allow for passing in null value.
-    const query = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUEs ("${firstName}","${lastName}", ${roleID}, ${managerID})`;
+    const query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUEs ("${firstName}","${lastName}", ${roleID}, ${managerID})`;
     
     await connection.query(query);
     await viewAllEmployees();
-    console.log(`New employees, ${row.first_name} ${row.last_name} added successfully.`); // Console.log the rows as a table
+    console.log(
+      "\x1b[33m%s\x1b[0m",
+      `New employee, ${firstName} ${lastName} added successfully.`
+    ); // Console.log the rows as a table
   } catch (error) {
     throw error;
   }
@@ -264,13 +254,13 @@ async function addEmployee() {
 // function to handle router.put("/update-employee-role/:id", updateEmployeeRole);
 async function updateEmployeeRole() {
   
-  const employeesRows = await getAllEmployees();
-  const employeesChoices = employeesRows.map((row) => ({
+  const employeeRows = await getAllEmployees();
+  const employeeChoices = employeeRows.map((row) => ({
     name: `${row.first_name} ${row.last_name}`,
     value: row.id,
   }));
- const rolesRows = await getAllRoles();
- const rolesChoices = rolesRows.map((row) => ({
+ const roleRows = await getAllRoles();
+ const roleChoices = roleRows.map((row) => ({
    name: `${row.title}`,
    value: row.id,
  }));
@@ -280,25 +270,25 @@ async function updateEmployeeRole() {
     const answers = await inquirer.prompt([
       {
         type: "list",
-        name: "employeesChoices",
+        name: "employeeChoices",
         message: "Which employee's role would you like to update?",
-        choices: employeesChoices,
+        choices: employeeChoices,
       },
 
       {
         type: "list",
-        name: "rolesChoices",
+        name: "roleChoices",
         message:
           "Select employee's new role.",
-        choices: rolesChoices,
+        choices: roleChoices,
       },
     ]);
 
-    const eID = answers.employeesChoices;
-    const query = `UPDATE employees SET role_id = ${answers.rolesChoices} WHERE id = ${answers.employeesChoices}`;
+    const eID = answers.employeeChoices;
+    const query = `UPDATE employee SET role_id = ${answers.roleChoices} WHERE id = ${answers.employeeChoices}`;
     await connection.query(query);
     
-    console.log("Employee's role updated successfully."); // Console.log the rows as a table
+    console.log("\x1b[33m%s\x1b[0m", "Employee's role updated successfully."); // Console.log the rows as a table
     await viewAllEmployees();
 
   } catch (error) {
@@ -309,8 +299,8 @@ async function updateEmployeeRole() {
 // function to handle router.put("/update-employee-manager/:id", updateEmployeeManager);
 async function updateEmployeeManager() {
   
-  const employeesRows = await getAllEmployees();
-  const employeesChoices = employeesRows.map((row) => ({
+  const employeeRows = await getAllEmployees();
+  const employeeChoices = employeeRows.map((row) => ({
     name: `${row.first_name} ${row.last_name}`,
     value: row.id,
   }));
@@ -322,15 +312,15 @@ async function updateEmployeeManager() {
     const EEanswers = await inquirer.prompt([
       {
         type: "list",
-        name: "employeesChoices",
+        name: "employeeChoices",
         message: "Which employee's manager would you like to update?",
-        choices: employeesChoices,
+        choices: employeeChoices,
       },
     ]);
     //Filter down the employee list to exclude the selected employee that the user would like to update on as 
     //it doesn't make any sense to select the same employee as is own manager.
     
-    const managerChoices =  employeesChoices.filter((employee) => employee.value !== EEanswers.employeesChoices);
+    const managerChoices =  employeeChoices.filter((employee) => employee.value !== EEanswers.employeeChoices);
 
     const managerAnswer = await inquirer.prompt([
       {
@@ -344,13 +334,16 @@ async function updateEmployeeManager() {
 
    
 
-    const eID = EEanswers.employeesChoices;
+    const eID = EEanswers.employeeChoices;
     const mID = managerAnswer.managerChoices
-    const query = `UPDATE employees SET manager_id = ${mID} WHERE id = ${eID}`;
+    const query = `UPDATE employee SET manager_id = ${mID} WHERE id = ${eID}`;
     await connection.query(query);
     
-    console.log("Employee's manager updated successfully."); 
-    // Console.log the all employees as a table
+    console.log(
+      "\x1b[33m%s\x1b[0m",
+      "Employee's manager updated successfully."
+    ); 
+    // Console.log the all employee as a table
     await viewAllEmployees();
 
   } catch (error) {
@@ -363,8 +356,8 @@ async function updateEmployeeManager() {
 //  function to handle router.delete("/delete-employee/:id", deleteAnEmployee);
 async function deleteAnEmployee() {
   
-  const employeesRows = await getAllEmployees();
-  const employeesChoices = employeesRows.map((row) => ({
+  const employeeRows = await getAllEmployees();
+  const employeeChoices = employeeRows.map((row) => ({
     name: `${row.first_name} ${row.last_name}`,
     value: row.id,
   }));
@@ -376,22 +369,19 @@ async function deleteAnEmployee() {
     const EEanswers = await inquirer.prompt([
       {
         type: "list",
-        name: "employeesChoices",
+        name: "employeeChoices",
         message: "Which employee would you like to delete?",
-        choices: employeesChoices,
+        choices: employeeChoices,
       },
     ]);
     
-    const eID = EEanswers.employeesChoices;
+    const eID = EEanswers.employeeChoices;
+    const deleteQuery = `DELETE FROM employee WHERE id = ${eID}`;
     
-    const setNullQuery = `UPDATE employees SET manager_id = NULL WHERE manager_id = ${eID}`;
-
-    const deleteQuery = `DELETE FROM employees WHERE id = ${eID}`;
-    await connection.query(setNullQuery);
     await connection.query(deleteQuery);
     
-    console.log("Employee deleted successfully."); 
-    // Console.log the all employees as a table
+    console.log("\x1b[33m%s\x1b[0m", "Employee deleted successfully."); 
+    // Console.log the all employee as a table
     await viewAllEmployees();
 
   } catch (error) {
@@ -399,6 +389,43 @@ async function deleteAnEmployee() {
   }
 }
 
+async function deleteARole() {
+   const roleRows = await getAllRoles();
+   const roleChoices = roleRows.map((row) => ({
+     name: `${row.title}`,
+     value: row.id,
+   }));
+
+  try {
+    //prompt user for new  employee's name
+    console.log(
+      "\x1b[33m%s\x1b[0m",
+      "Deleting a role will also remove any employees that are under the role."
+    );
+    const answers = await inquirer.prompt([
+      {
+        type: "list",
+        name: "roleChoices",
+        message: "Which role would you like to delete?",
+        choices: roleChoices,
+      },
+    ]);
+
+    const eID = answers.roleChoices;
+
+   
+
+    const deleteQuery = `DELETE FROM role WHERE id = ${eID}`;
+    
+    await connection.query(deleteQuery);
+
+    console.log("\x1b[33m%s\x1b[0m", "Employee deleted successfully.");
+    // Console.log the all employee as a table
+    await viewAllRoles();
+  } catch (error) {
+    throw error;
+  }
+}
 
 // Export the controller functions
 module.exports = {
@@ -411,4 +438,5 @@ module.exports = {
   updateEmployeeRole,
   updateEmployeeManager,
   deleteAnEmployee,
+  deleteARole,
 };

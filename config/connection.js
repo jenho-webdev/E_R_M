@@ -13,7 +13,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST || "localhost",
     dialect: "mysql",
     port: 3306,
-    logging: true, // Disable console logging of executed queries
+    logging: false, // Disable console logging of executed queries
   }
 );
 
