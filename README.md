@@ -1,9 +1,7 @@
 # ERM
-A simple CLI Employee Relationship Managment(ERM) System allows users to  
+A simple CLI Employee Relationship Management (ERM) System allows users to manage employees' information and relations in a company.  
 
 - [Explore the docs]( https://github.com/jenho-webdev/ERM)
-
-- [Deployed Application](https://jenho-webdev.github.io/ERM/)
 
 - [Report Bug](https://github.com/jenho-webdev/ERM/issues/)
 
@@ -56,7 +54,7 @@ Note: The .env file should never be committed to version control, as it contains
 
 Current version: V2.0
 
-Functions available in current version:
+Functions available in the current version:
 
 ```list
 VIEW ALL DEPARTMENTS
@@ -72,11 +70,11 @@ DELETE A ROLE
 EXIT
 ```
 
-Functions planned for next version V3.0:
+Functions planned for the next version V3.0:
 
 ```list
-VIEW EMPOLYEE BY DEPARTMENT
-VIEW EMPOLYEE BY ROLE
+VIEW EMPLOYEES BY DEPARTMENT
+VIEW EMPLOYEES BY ROLE
 ```
 
 ## Demo
@@ -86,7 +84,7 @@ The following video demo the application being used from the command line:
 
 ## Contributing
 
-Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please open an issue or a pull request.
+Contributions are welcome! If you have suggestions, bug reports, or feature requests, please open an issue or a pull request.
 
 ## License
 
@@ -103,11 +101,11 @@ Feel free to modify and adapt this example to fit your specific project requirem
 
 ## Credits
 
-Simple ERM was created by me as part a coding challenge for the UCI Full Stack bootcamp course assignment related to topics on OOP, node js., Express.js, Heroku deployment, and more.
+Simple ERM was created by me as part of a coding challenge for the UCI Full Stack Bootcamp course assignment related to topics on OOP, node js., Express.js, Heroku deployment, and more.
 
-The development of this program was supported by the course materials and resources provided by the bootcamp.
+The development of this program was supported by the course materials and resources provided by the boot camp.
 
-Shield and badges used in this markdown document were sourced from Shields.io.
+The shield and badges used in this markdown document were sourced from Shields.io.
 
 ## Contact
 
